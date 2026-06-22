@@ -1,61 +1,13 @@
-export const dynamic = "force-dynamic";
-
-function esc(value) {
-  return String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-}
-
-function getProviderName(item) {
-  const basic = item.basic || {};
-
-  if (basic.organization_name) {
-    return basic.organization_name;
-  }
-
-  return [
-    basic.first_name,
-    basic.middle_name,
-    basic.last_name,
-    basic.credential,
-  ]
-    .filter(Boolean)
-    .join(" ");
-}
-
-function getAddress(item) {
-  const addresses = item.addresses || [];
-  const location =
-    addresses.find((a) => a.address_purpose === "LOCATION") || addresses[0];
-
-  if (!location) return "";
-
-  return [
-    location.address_1,
-    location.address_2,
-    location.city,
-    location.state,
-    location.postal_code,
-  ]
-    .filter(Boolean)
-    .join(", ");
-}
-
-function getTaxonomies(item) {
-  return (item.taxonomies || [])
-    .map((t) => `${t.desc || ""}${t.code ? ` (${t.code})` : ""}`)
-    .filter(Boolean)
-    .join("; ");
-}
-
 export default async function SearchPage({ searchParams }) {
   const params = new URLSearchParams();
 
+  const npiValue = searchParams.npi || searchParams.number;
+
+  if (npiValue) {
+    params.set("number", npiValue);
+  }
+
   const allowedFields = [
-    "number",
-    "npi",
     "first_name",
     "last_name",
     "organization_name",
@@ -70,11 +22,7 @@ export default async function SearchPage({ searchParams }) {
 
   for (const field of allowedFields) {
     const value = searchParams[field];
-    if (!value) continue;
-
-    if (field === "npi") {
-      params.set("number", value);
-    } else {
+    if (value) {
       params.set(field, value);
     }
   }
