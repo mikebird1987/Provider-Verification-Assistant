@@ -1,29 +1,16 @@
 {
-  "name": "npi-registry-search",
+  "name": "provider-verification-assistant",
   "version": "1.0.0",
-  "description": "Provider Verification Assistant GPT — NPI Registry Search (server-rendered, ChatGPT-compatible)",
-  "main": "server.js",
+  "private": true,
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
-  },
-  "dependencies": {
-    "express": "^4.18.2"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "license": "MIT"
-}
-{
-  "scripts": {
-    "build": "next build",
     "dev": "next dev",
+    "build": "next build",
     "start": "next start"
   },
   "dependencies": {
     "next": "latest",
     "react": "latest",
     "react-dom": "latest"
-  }
+  },
+  "devDependencies": {}
 }
