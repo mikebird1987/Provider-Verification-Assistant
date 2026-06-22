@@ -1,6 +1,7 @@
 export default async function SearchPage({ searchParams }) {
   const params = new URLSearchParams();
 
+  // Support both ?npi=1578435020 and ?number=1578435020
   const npiValue = searchParams.npi || searchParams.number;
 
   if (npiValue) {
@@ -37,7 +38,11 @@ export default async function SearchPage({ searchParams }) {
     params.has("number") ||
     params.has("first_name") ||
     params.has("last_name") ||
-    params.has("organization_name");
+    params.has("organization_name") ||
+    params.has("city") ||
+    params.has("state") ||
+    params.has("postal_code") ||
+    params.has("taxonomy_description");
 
   let data = null;
   let error = null;
