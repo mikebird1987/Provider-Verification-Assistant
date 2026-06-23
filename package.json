@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@netlify/plugin-nextjs": "latest",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest"
