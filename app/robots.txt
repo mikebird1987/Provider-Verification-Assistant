@@ -1,4 +1,10 @@
-User-Agent: *
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: *
 Allow: /
 
 Sitemap: https://zai-me.me/sitemap.xml
