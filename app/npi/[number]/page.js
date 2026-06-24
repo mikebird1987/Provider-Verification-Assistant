@@ -99,17 +99,39 @@ function getAuthorizedOfficial(item) {
     .join(" - ");
 }
 
+async function getNpiFromParams(params) {
+  const resolvedParams = await params;
+  return resolvedParams?.number || "";
+}
+
 export async function generateMetadata({ params }) {
-  const number = params.number;
+  const npi = await getNpiFromParams(params);
 
   return {
-    title: `NPI ${number} Provider Lookup`,
-    description: `CMS NPI Registry provider details for NPI ${number}.`,
+    title: npi
+      ? `NPI ${npi} Provider Lookup`
+      : "NPI Provider Lookup",
+    description: npi
+      ? `CMS NPI Registry provider details for NPI ${npi}.`
+      : "CMS NPI Registry provider lookup.",
   };
 }
 
 export default async function NpiNumberPage({ params }) {
-  const npi = params.number;
+  const npi = await getNpiFromParams(params);
+
+  if (!npi) {
+    return (
+      <main style={{ fontFamily: "Arial, sans-serif", padding: "24px" }}>
+        <h1>NPI Lookup Result</h1>
+        <p>No NPI number was found in the URL.</p>
+        <p>Use this format:</p>
+        <p>
+          <code>https://zai-me.me/npi/1578435020</code>
+        </p>
+      </main>
+    );
+  }
 
   const cmsUrl = `https://npiregistry.cms.hhs.gov/api/?version=2.1&number=${encodeURIComponent(
     npi
@@ -152,6 +174,10 @@ export default async function NpiNumberPage({ params }) {
         <p>
           This page searches the public CMS/NPPES NPI Registry API and displays
           provider details when a matching NPI exists.
+        </p>
+        <p>
+          <strong>CMS API URL:</strong>{" "}
+          <code style={{ wordBreak: "break-all" }}>{cmsUrl}</code>
         </p>
       </main>
     );
@@ -199,68 +225,80 @@ export default async function NpiNumberPage({ params }) {
             </th>
             <td>{providerName || "Not listed"}</td>
           </tr>
+
           <tr>
             <th style={{ textAlign: "left", paddingRight: "16px" }}>NPI</th>
             <td>{item.number || "Not listed"}</td>
           </tr>
+
           <tr>
             <th style={{ textAlign: "left", paddingRight: "16px" }}>
               Entity Type
             </th>
             <td>{item.enumeration_type || "Not listed"}</td>
           </tr>
+
           <tr>
             <th style={{ textAlign: "left", paddingRight: "16px" }}>
               Primary Taxonomy
             </th>
             <td>{getPrimaryTaxonomy(item) || "Not listed"}</td>
           </tr>
+
           <tr>
             <th style={{ textAlign: "left", paddingRight: "16px" }}>
               Practice Location
             </th>
             <td>{getLocationAddress(item) || "Not listed"}</td>
           </tr>
+
           <tr>
             <th style={{ textAlign: "left", paddingRight: "16px" }}>
               Mailing Address
             </th>
             <td>{getMailingAddress(item) || "Not listed"}</td>
           </tr>
+
           <tr>
             <th style={{ textAlign: "left", paddingRight: "16px" }}>Phone</th>
             <td>{getPhone(item) || "Not listed"}</td>
           </tr>
+
           <tr>
             <th style={{ textAlign: "left", paddingRight: "16px" }}>
               Enumeration Date
             </th>
             <td>{item.basic?.enumeration_date || "Not listed"}</td>
           </tr>
+
           <tr>
             <th style={{ textAlign: "left", paddingRight: "16px" }}>
               Last Updated
             </th>
             <td>{item.basic?.last_updated || "Not listed"}</td>
           </tr>
+
           <tr>
             <th style={{ textAlign: "left", paddingRight: "16px" }}>
               Certification Date
             </th>
             <td>{item.basic?.certification_date || "Not listed"}</td>
           </tr>
+
           <tr>
             <th style={{ textAlign: "left", paddingRight: "16px" }}>
               Organization Subpart
             </th>
             <td>{item.basic?.organizational_subpart || "Not listed"}</td>
           </tr>
+
           <tr>
             <th style={{ textAlign: "left", paddingRight: "16px" }}>
               Authorized Official
             </th>
             <td>{getAuthorizedOfficial(item) || "Not listed"}</td>
           </tr>
+
           <tr>
             <th style={{ textAlign: "left", paddingRight: "16px" }}>
               Authorized Official Phone
